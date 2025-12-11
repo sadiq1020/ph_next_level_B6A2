@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { initDB } from "./database/db";
 import config from "./config";
 import { authRoute } from "./modules/auth/auth.route";
+import { userRoute } from "./modules/user/user.route";
 
 const app = express();
 const port = config.port;
@@ -13,7 +14,9 @@ app.use(express.json());
 // 1. auth route
 app.use("/api/v1/auth", authRoute);
 
-// 2. user routes X 
+// 2. user routes
+app.use("/api/v1/users", userRoute);
+
 
 // 3. vehicle routes
 
