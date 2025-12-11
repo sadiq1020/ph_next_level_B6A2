@@ -1,8 +1,11 @@
-import { Pool } from "pg"
+import { Pool } from "pg";
+import config from "../config";
 
 // connecting db
+// dotenv.config({ path: path.join(process.cwd(), ".env") });
+
 export const pool = new Pool({
-    connectionString: 'postgresql://neondb_owner:npg_hC6WbDUSJT2p@ep-weathered-breeze-a893ef3z-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
+    connectionString: `${config.connection_str}`
 })
 
 // creating tables 
@@ -10,7 +13,7 @@ export const initDB = async () => {
 
     try {
 
-        // creating users table
+        // create "users" table
         await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -24,7 +27,7 @@ export const initDB = async () => {
             );
         `);
 
-        // create Vehicles table
+        // create "Vehicles" table
         await pool.query(`
         CREATE TABLE IF NOT EXISTS vehicles (
                 id SERIAL PRIMARY KEY,
@@ -38,8 +41,7 @@ export const initDB = async () => {
         );
             `);
 
-
-        // create bookings table
+        // create "bookings" table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS bookings (
                 id SERIAL PRIMARY KEY,

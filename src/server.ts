@@ -1,22 +1,23 @@
 import express, { Request, Response } from "express";
-import { Pool } from "pg";
 import { initDB } from "./database/db";
-import { userRoute } from "./modules/user/user.route";
+import config from "./config";
+import { authRoute } from "./modules/auth/auth.route";
 
 const app = express();
+const port = config.port;
 
 // middleware 
 app.use(express.json());
 
 
+// 1. auth route
+app.use("/api/v1/auth", authRoute);
 
-// user routes
-app.use("/api/v1", userRoute);
+// 2. user routes X 
 
-// vehicle routes
+// 3. vehicle routes
 
-
-// booking routes
+// 4. booking routes
 
 initDB();
 
@@ -29,6 +30,6 @@ app.get('/', (req: Request, res: Response) => {
     })
 })
 
-app.listen(5000, () => {
-    console.log("server is running on port 5000");
+app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
 })
