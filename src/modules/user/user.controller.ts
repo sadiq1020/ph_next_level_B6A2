@@ -24,7 +24,7 @@ const updateUsers = async (req: Request, res: Response) => {
 
     // console.log(req.body);
     try {
-        const result = await userServices.updateUsersFromDB(req.body, req.params.userId!, req.user);
+        const result = await userServices.updateUsersIntoDB(req.body, req.params.userId!, req.user);
         // console.log(result);
         return res.status(200).json({
             success: true,

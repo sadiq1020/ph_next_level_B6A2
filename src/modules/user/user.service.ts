@@ -14,7 +14,7 @@ const getAllUsersFromDB = async () => {
 }
 
 // update a single user or all users business logics
-const updateUsersFromDB = async (payload: Record<string, unknown>, userId: string, authenticatedUser: any) => {
+const updateUsersIntoDB = async (payload: Record<string, unknown>, userId: string, authenticatedUser: any) => {
     const { name, email, phone, role } = payload;
 
     // getting the user from db whoever trying to sign in
@@ -80,6 +80,6 @@ const deleteUserFromDB = async (id: string) => {
 
 export const userServices = {
     getAllUsersFromDB,
-    updateUsersFromDB,
+    updateUsersIntoDB,
     deleteUserFromDB
 }
