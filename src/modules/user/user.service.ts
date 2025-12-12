@@ -5,9 +5,9 @@ const getAllUsersFromDB = async () => {
 
     const result = await pool.query(
         `
-        SELECT * FROM users
+        SELECT id, name, email, phone, role FROM users
         `
-    );
+    ); // excluding password, so that no one can (even admin) see the users' password
 
     return result;
 }
