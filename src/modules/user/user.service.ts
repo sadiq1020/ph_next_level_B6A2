@@ -72,7 +72,6 @@ const updateUsersIntoDB = async (payload: Record<string, unknown>, userId: strin
 }
 
 // delete a user business logics
-// delete a todo
 const deleteUserFromDB = async (id: string) => {
     const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id])
     return result;

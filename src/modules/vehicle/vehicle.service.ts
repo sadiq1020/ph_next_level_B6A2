@@ -36,9 +36,16 @@ const updateVehicleIntoDB = async (payload: Record<string, unknown>, vehicleId: 
     return result;
 }
 
+// delete a vehicle business logics
+const deleteVehicleFromDB = async (vehicleId: string) => {
+    const result = await pool.query(`DELETE FROM vehicles WHERE id = $1 RETURNING *`, [vehicleId])
+    return result;
+}
+
 export const vehicleServices = {
     addVehicleIntoDB,
     getAllVehiclesFromDB,
     getSingleVehicleFromDB,
-    updateVehicleIntoDB
+    updateVehicleIntoDB,
+    deleteVehicleFromDB
 }
