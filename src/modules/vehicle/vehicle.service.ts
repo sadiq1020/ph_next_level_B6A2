@@ -11,6 +11,18 @@ const addVehicleIntoDB = async (payload: Record<string, unknown>) => {
     return result;
 }
 
+// getAllVehicles business logics
+const getAllVehiclesFromDB = async () => {
+    const result = await pool.query(
+        `
+        SELECT vehicle_name, type, registration_number, daily_rent_price, availability_status FROM vehicles
+        `
+    );
+
+    return result;
+}
+
 export const vehicleServices = {
-    addVehicleIntoDB
+    addVehicleIntoDB,
+    getAllVehiclesFromDB
 }

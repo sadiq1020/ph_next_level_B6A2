@@ -9,7 +9,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         return res.status(200).json({
             success: true,
             message: "Users retrieved successfully",
-            data: result
+            data: result.rows
         })
     } catch (error: any) {
         return res.status(500).json({
@@ -29,7 +29,7 @@ const updateUsers = async (req: Request, res: Response) => {
         return res.status(200).json({
             success: true,
             message: "Users updated successfully",
-            data: result
+            data: result.rows
         })
     } catch (error: any) {
         return res.status(500).json({
