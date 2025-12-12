@@ -4,7 +4,7 @@ import config from "../config";
 import { pool } from "../database/db";
 
 const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all roles by using (...) as an array
-    console.log(roles);
+    // console.log(roles);
 
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -18,7 +18,7 @@ const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all
 
             // verify the token
             const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload;
-            console.log(decoded);
+            // console.log(decoded);
 
             // check if the user (token got from that user) is actually exist in DB
             const user = await pool.query(
@@ -30,7 +30,7 @@ const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all
             if (!user) {
                 throw new Error("User not found")
             }
-            // console.log(decoded);
+            console.log(decoded);
 
             // sending decoded (whoever's info in decoded) to req.user (by inserting in index.d.ts)
             req.user = decoded;
