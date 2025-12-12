@@ -46,13 +46,12 @@ const updateUsersFromDB = async (payload: Record<string, unknown>, userId: strin
         return result;
     }
 
-
     // update only his/her own profile, if the authenticated user is a "customer"
     if (authenticatedUser.role === 'customer') {
 
         // Check if the customer is trying to update their own profile
         if (authenticatedUser.id !== parseInt(userId)) {
-            throw new Error("You can only update your own profile");
+            throw new Error("You can only update your own profile!");
         }
 
         // Customer can change all except their own role 
@@ -69,10 +68,18 @@ const updateUsersFromDB = async (payload: Record<string, unknown>, userId: strin
         return result;
     }
 
-    throw new Error("Unauthorized action");
+    throw new Error("Unauthorized attempt");
+}
+
+// delete a user business logics
+// delete a todo
+const deleteUserFromDB = async (id: string) => {
+    const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id])
+    return result;
 }
 
 export const userServices = {
     getAllUsersFromDB,
-    updateUsersFromDB
+    updateUsersFromDB,
+    deleteUserFromDB
 }

@@ -30,7 +30,7 @@ const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all
             if (!user) {
                 throw new Error("User not found")
             }
-            console.log(decoded);
+            // console.log(decoded);
 
             // sending decoded (whoever's info in decoded) to req.user (by inserting in index.d.ts)
             req.user = decoded;

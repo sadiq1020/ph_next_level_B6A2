@@ -39,7 +39,33 @@ const updateUsers = async (req: Request, res: Response) => {
     }
 }
 
+// delete user (only admin)
+const deleteUser = async (req: Request, res: Response) => {
+    try {
+        const result = await userServices.deleteUserFromDB(req.params.userId!);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        } else
+            res.status(200).json({
+                success: true,
+                data: null,
+                message: 'User deleted successfully'
+            });
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+    }
+}
+
 export const userController = {
     getAllUsers,
-    updateUsers
+    updateUsers,
+    deleteUser
 }
