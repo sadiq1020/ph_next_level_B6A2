@@ -37,7 +37,31 @@ const getAllVehicles = async (req: Request, res: Response) => {
     }
 }
 
+// get a single todo
+const getSingleVehicle = async (req: Request, res: Response) => {
+    try {
+        const result = await vehicleServices.getSingleVehicleFromDB(req.params.vehicleId!);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                error: "Vehicle not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Vehicle retrieved successfully',
+            data: result.rows[0]
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+    }
+}
+
 export const vehicleController = {
     addVehicle,
-    getAllVehicles
+    getAllVehicles,
+    getSingleVehicle
 }
