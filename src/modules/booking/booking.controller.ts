@@ -42,7 +42,9 @@ const updateBooking = async (req: Request, res: Response) => {
     try {
         const result = await bookingService.updateBookingIntoDB(req.body, req.params.bookingId!, req.user);
 
-        // Different messages based on action
+        // Different messages based on action  
+        // return { booking: updatedBooking.rows[0], action: 'cancelled' };
+        //  return { booking: updatedBooking.rows[0], vehicle: updatedVehicle.rows[0], action: 'returned' };
         let message = "";
         let responseData: any = result.booking;
 

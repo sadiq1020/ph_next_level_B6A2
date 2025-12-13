@@ -1,4 +1,5 @@
 import { pool } from "../../database/db";
+import { autoUpdateExpiredBookings } from "../../helpers/autoUpdateBookings";
 
 // add a new vehicle (admin only)
 const addVehicleIntoDB = async (payload: Record<string, unknown>) => {
@@ -13,6 +14,10 @@ const addVehicleIntoDB = async (payload: Record<string, unknown>) => {
 
 // getAllVehicles business logics
 const getAllVehiclesFromDB = async () => {
+
+    // First call this function from helper folder to Automatically update expired bookings before fetching booking data
+    await autoUpdateExpiredBookings();
+
     const result = await pool.query(
         `
         SELECT id, vehicle_name, type, registration_number, daily_rent_price, availability_status FROM vehicles
@@ -24,6 +29,9 @@ const getAllVehiclesFromDB = async () => {
 
 // get a single vehicle business logics
 const getSingleVehicleFromDB = async (id: string) => {
+    // First call this function from helper folder to Automatically update expired bookings before fetching booking data
+    await autoUpdateExpiredBookings();
+
     const result = await pool.query(`SELECT * FROM vehicles WHERE id = $1`, [id])
     return result
 }

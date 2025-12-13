@@ -1,4 +1,5 @@
 import { pool } from "../../database/db";
+import { autoUpdateExpiredBookings } from "../../helpers/autoUpdateBookings";
 
 // add a booking business logics
 const bookingIntoDB = async (payload: Record<string, unknown>) => {
@@ -93,6 +94,9 @@ const bookingIntoDB = async (payload: Record<string, unknown>) => {
 
 // get all bookings or a customer's booking/s business logics
 const getBookingFromDB = async (authenticatedUser: any) => {
+
+    // First call this function from helper folder to Automatically update expired bookings before fetching booking data
+    await autoUpdateExpiredBookings();
 
     // If user is an admin -> get ALL bookings
     // new concept => here tables -> bookings = b, users = u, vehicles = v [table name alias or nickname] 
@@ -206,7 +210,7 @@ const updateBookingIntoDB = async (payload: Record<string, unknown>, bookingId: 
             // Update booking status to cancelled
             const updatedBooking = await client.query(
                 `UPDATE bookings 
-                 SET status = $1, 
+                 SET status = $1 
                  WHERE id = $2 
                  RETURNING *`,
                 ['cancelled', bookingId]
@@ -215,7 +219,7 @@ const updateBookingIntoDB = async (payload: Record<string, unknown>, bookingId: 
             // Update vehicle status back to available
             await client.query(
                 `UPDATE vehicles 
-                 SET availability_status = $1,
+                 SET availability_status = $1
                  WHERE id = $2`,
                 ['available', booking.vehicle_id]
             );
@@ -241,7 +245,7 @@ const updateBookingIntoDB = async (payload: Record<string, unknown>, bookingId: 
             // Update booking status to returned
             const updatedBooking = await client.query(
                 `UPDATE bookings 
-                 SET status = $1, updated_at = NOW() 
+                 SET status = $1
                  WHERE id = $2 
                  RETURNING *`,
                 ['returned', bookingId]
@@ -250,7 +254,7 @@ const updateBookingIntoDB = async (payload: Record<string, unknown>, bookingId: 
             // Update vehicle status back to available
             const updatedVehicle = await client.query(
                 `UPDATE vehicles 
-                 SET availability_status = $1,
+                 SET availability_status = $1
                  WHERE id = $2
                  RETURNING availability_status`,
                 ['available', booking.vehicle_id]
@@ -258,11 +262,7 @@ const updateBookingIntoDB = async (payload: Record<string, unknown>, bookingId: 
 
             await client.query('COMMIT');
 
-            return {
-                booking: updatedBooking.rows[0],
-                vehicle: updatedVehicle.rows[0],
-                action: 'returned'
-            };
+            return { booking: updatedBooking.rows[0], vehicle: updatedVehicle.rows[0], action: 'returned' };
         }
 
         throw new Error("Unauthorized action");
