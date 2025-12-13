@@ -1,5 +1,6 @@
 import { pool } from "../../database/db";
 
+// add a booking business logics
 const bookingIntoDB = async (payload: Record<string, unknown>) => {
     const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
@@ -43,8 +44,7 @@ const bookingIntoDB = async (payload: Record<string, unknown>) => {
         }
 
         // Step 4: Calculate number of days
-        // endDate.getTime() gives milliseconds since 1970
-        // startDate.getTime() gives milliseconds since 1970
+        // getTime() gives dates in  milliseconds
         // Difference = milliseconds between the two dates
         const timeDifference = endDate.getTime() - startDate.getTime();
 
@@ -91,6 +91,59 @@ const bookingIntoDB = async (payload: Record<string, unknown>) => {
     }
 }
 
+// get all bookings or a customer's booking/s business logics
+const getBookingFromDB = async (authenticatedUser: any) => {
+
+    // If user is an admin -> get ALL bookings
+    if (authenticatedUser.role === 'admin') {
+        const result = await pool.query(
+            `SELECT 
+                b.id, 
+                b.customer_id, 
+                b.vehicle_id, 
+                b.rent_start_date, 
+                b.rent_end_date, 
+                b.total_price, 
+                b.status,
+                u.name as customer_name,
+                u.email as customer_email,
+                v.vehicle_name,
+                v.type as vehicle_type
+             FROM bookings b
+             JOIN users u ON b.customer_id = u.id
+             JOIN vehicles v ON b.vehicle_id = v.id
+             ORDER BY b.created_at DESC`
+        );
+        return result;
+    }
+
+    // If user is a customer -> get only own booking/s
+    if (authenticatedUser.role === 'customer') {
+        const result = await pool.query(
+            `SELECT 
+                b.id, 
+                b.customer_id, 
+                b.vehicle_id, 
+                b.rent_start_date, 
+                b.rent_end_date, 
+                b.total_price, 
+                b.status,
+                v.vehicle_name,
+                v.type as vehicle_type,
+                v.registration_number
+             FROM bookings b
+             JOIN vehicles v ON b.vehicle_id = v.id
+             WHERE b.customer_id = $1
+             ORDER BY b.created_at DESC`,
+            [authenticatedUser.id]
+        );
+        return result;
+    }
+
+    throw new Error("Unauthorized access");
+}
+
 export const bookingService = {
-    bookingIntoDB
+    bookingIntoDB,
+    getBookingFromDB
 }

@@ -15,7 +15,7 @@ const addVehicleIntoDB = async (payload: Record<string, unknown>) => {
 const getAllVehiclesFromDB = async () => {
     const result = await pool.query(
         `
-        SELECT vehicle_name, type, registration_number, daily_rent_price, availability_status FROM vehicles
+        SELECT id, vehicle_name, type, registration_number, daily_rent_price, availability_status FROM vehicles
         `
     );
 
