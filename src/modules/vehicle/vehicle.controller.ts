@@ -88,28 +88,21 @@ const updateVehicle = async (req: Request, res: Response) => {
 // delete a vehicle (only admin)
 const deleteVehicle = async (req: Request, res: Response) => {
     try {
-        const result = await vehicleServices.deleteVehicleFromDB(req.params.vehicleId!);
+        await vehicleServices.deleteVehicleFromDB(req.params.vehicleId!);
 
-        if (result.rowCount === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'Vehicle not found'
-            });
-        } else
-            res.status(200).json({
-                success: true,
-                data: null,
-                message: 'Vehicle deleted successfully'
-            });
+        return res.status(200).json({
+            success: true,
+            data: null,
+            message: 'Vehicle deleted successfully'
+        });
 
     } catch (error: any) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            message: error.message,
-        })
+            message: error.message
+        });
     }
 }
-
 export const vehicleController = {
     addVehicle,
     getAllVehicles,

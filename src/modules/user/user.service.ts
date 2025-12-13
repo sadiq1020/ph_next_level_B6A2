@@ -72,8 +72,42 @@ const updateUsersIntoDB = async (payload: Record<string, unknown>, userId: strin
 }
 
 // delete a user business logics
-const deleteUserFromDB = async (id: string) => {
-    const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id])
+// const deleteUserFromDB = async (id: string) => {
+//     const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id])
+//     return result;
+// }
+
+// delete a user business logics (only if no active bookings exist)
+const deleteUserFromDB = async (userId: string) => {
+
+    // Check if user exists
+    const userCheck = await pool.query(
+        `SELECT id, name, email FROM users WHERE id = $1`,
+        [userId]
+    );
+
+    if (userCheck.rows.length === 0) {
+        throw new Error("User not found");
+    }
+
+    // Check if user has any active bookings
+    const activeBookings = await pool.query(
+        `SELECT id FROM bookings 
+         WHERE customer_id = $1 
+         AND status = 'active'`,
+        [userId]
+    );
+
+    if (activeBookings.rows.length > 0) {
+        throw new Error("Cannot delete user with active bookings");
+    }
+
+    // Delete the user (no active bookings exist)
+    const result = await pool.query(
+        `DELETE FROM users WHERE id = $1 RETURNING *`,
+        [userId]
+    );
+
     return result;
 }
 

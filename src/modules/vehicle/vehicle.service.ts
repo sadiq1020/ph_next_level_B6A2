@@ -45,8 +45,45 @@ const updateVehicleIntoDB = async (payload: Record<string, unknown>, vehicleId: 
 }
 
 // delete a vehicle business logics
+
+// const deleteVehicleFromDB = async (vehicleId: string) => {
+//     const result = await pool.query(`DELETE FROM vehicles WHERE id = $1 RETURNING *`, [vehicleId])
+//     return result;
+// }
+
+// delete a vehicle business logics
+
+// delete a vehicle business logics (only if no active bookings exist)
 const deleteVehicleFromDB = async (vehicleId: string) => {
-    const result = await pool.query(`DELETE FROM vehicles WHERE id = $1 RETURNING *`, [vehicleId])
+
+    // Step 1: Check if vehicle exists
+    const vehicleCheck = await pool.query(
+        `SELECT id, vehicle_name FROM vehicles WHERE id = $1`,
+        [vehicleId]
+    );
+
+    if (vehicleCheck.rows.length === 0) {
+        throw new Error("Vehicle not found");
+    }
+
+    // Step 2: Check if vehicle has any active bookings
+    const activeBookings = await pool.query(
+        `SELECT id FROM bookings 
+         WHERE vehicle_id = $1 
+         AND status = 'active'`,
+        [vehicleId]
+    );
+
+    if (activeBookings.rows.length > 0) {
+        throw new Error("Cannot delete vehicle with active bookings");
+    }
+
+    // Step 3: Delete the vehicle (no active bookings exist)
+    const result = await pool.query(
+        `DELETE FROM vehicles WHERE id = $1 RETURNING *`,
+        [vehicleId]
+    );
+
     return result;
 }
 
