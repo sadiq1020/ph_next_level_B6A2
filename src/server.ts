@@ -4,6 +4,7 @@ import config from "./config";
 import { authRoute } from "./modules/auth/auth.route";
 import { userRoute } from "./modules/user/user.route";
 import { vehicleRoute } from "./modules/vehicle/vehicle.route";
+import { bookingRoute } from "./modules/booking/booking.route";
 
 const app = express();
 const port = config.port;
@@ -22,6 +23,8 @@ app.use("/api/v1/users", userRoute);
 app.use("/api/v1/vehicles", vehicleRoute);
 
 // 4. booking routes
+app.use("/api/v1/bookings", bookingRoute);
+
 
 initDB();
 

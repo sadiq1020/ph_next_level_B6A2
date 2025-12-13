@@ -8,13 +8,13 @@ const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all
 
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const token = req.headers.authorization;
+            const token = req.headers.authorization?.split(' ')[1]
+            // console.log(token);
 
             // check if there is no any token
             if (!token) {
                 throw new Error("You are not authorized")
             }
-            // console.log(token);
 
             // verify the token
             const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload;
@@ -44,7 +44,6 @@ const auth = (...roles: ("admin" | "customer")[]) => { // getting a role or  all
             }
 
             next()
-
 
         } catch (error: any) {
             res.status(500).json({

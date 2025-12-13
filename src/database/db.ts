@@ -47,9 +47,10 @@ export const initDB = async () => {
                 id SERIAL PRIMARY KEY,
                 customer_id INT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
                 vehicle_id INT REFERENCES vehicles(id) ON DELETE CASCADE NOT NULL,
-                rent_start_date TIMESTAMP NOT NULL,
+                rent_start_date TIMESTAMP NOT NULL CHECK (rent_start_date >= CURRENT_TIMESTAMP),
                 rent_end_date TIMESTAMP NOT NULL CHECK (rent_end_date > rent_start_date),
                 total_price NUMERIC(10, 2) NOT NULL CHECK (total_price > 0),
+                status VARCHAR(10) NOT NULL CHECK (status IN ('active','cancelled','returned')) DEFAULT 'active',
                 created_at TIMESTAMP DEFAULT NOW(),
                 updated_at TIMESTAMP DEFAULT NOW()
             );
