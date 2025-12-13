@@ -37,7 +37,44 @@ const getBooking = async (req: Request, res: Response) => {
     }
 }
 
+// update a booking (cancel or mark as returned)
+const updateBooking = async (req: Request, res: Response) => {
+    try {
+        const result = await bookingService.updateBookingIntoDB(req.body, req.params.bookingId!, req.user);
+
+        // Different messages based on action
+        let message = "";
+        let responseData: any = result.booking;
+
+        if (result.action === 'cancelled') {
+            message = "Booking cancelled successfully";
+        } else if (result.action === 'returned') {
+            message = "Booking marked as returned. Vehicle is now available";
+            // Include vehicle status in response for admin
+            responseData = {
+                ...result.booking,
+                vehicle: {
+                    availability_status: result.vehicle.availability_status
+                }
+            };
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: message,
+            data: responseData
+        });
+
+    } catch (error: any) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+    }
+}
+
 export const bookingController = {
     addBooking,
-    getBooking
+    getBooking,
+    updateBooking
 }
