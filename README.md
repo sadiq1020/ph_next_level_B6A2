@@ -4,9 +4,8 @@ A comprehensive backend API for managing vehicle rentals with automatic booking 
 
 ## 🌐 Links
 
-- **Live API:** [https://ph-next-level-b6a2.vercel.app/](https://ph-next-level-b6a2.vercel.app/)
-- **GitHub Repository:** [https://github.com/sadiq1020/ph_next_level_B6A2](https://github.com/sadiq1020/ph_next_level_B6A2)
-
+- **Live API:** https://ph-next-level-b6a2.vercel.app/
+- **GitHub Repository:** https://github.com/sadiq1020/ph_next_level_B6A2
 ---
 
 ## ✨ Features
